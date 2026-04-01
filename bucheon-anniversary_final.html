@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>부천희망재단 창립 15주년 축하메시지</title>
+
+  <!--
+  ════════════════════════════════════════════════════
+   부천희망재단 15주년 축하메시지 페이지
+   작성일: 2025년
+   ────────────────────────────────────────────────
+   ★ 배포 방법 (비개발자도 OK!)
+     1) 이 파일을 GitHub Pages, Netlify, Vercel 등에 업로드하면
+        https://your-site.com/bucheon-anniversary.html 형태의 URL이 생깁니다.
+     2) 스티비 뉴스레터 → 버튼 편집 → 링크에 위 URL을 입력하면 됩니다.
+
+   ★ Google Sheets 연동 방법
+     아래 CONFIG 섹션의 GOOGLE_SCRIPT_URL 에
+     Google Apps Script 배포 URL을 붙여넣으면 자동으로 시트에 저장됩니다.
+     (Apps Script 코드 샘플은 파일 맨 아래 주석 참고)
+  ════════════════════════════════════════════════════
+  -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════
+       CSS 변수 (색상·여백 일괄 관리)
+       여기만 수정하면 전체 색상이 바뀝니다
+    ══════════════════════════════════════ */
+    :root {
+      --blue-deep:   #2563a8;
+      --blue-mid:    #4a90d9;
+      --blue-light:  #7ec8e3;
+      --blue-pale:   #ddeef9;
+      --blue-ghost:  #f0f7fd;
+      --gray-text:   #3a3a4a;
+      --gray-sub:    #6b7280;
+      --gray-line:   #d1dde8;
+      --white:       #ffffff;
+      --gold-accent: #c9a84c;   /* 포인트 골드 */
+
+      --radius-card: 18px;
+      --shadow-card: 0 4px 24px rgba(37,99,168,.10);
+      --shadow-btn:  0 4px 16px rgba(37,99,168,.30);
+
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body:    'Noto Sans KR', sans-serif;
+    }
+
+    /* ─── 리셋 ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--blue-ghost);
+      color: var(--gray-text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── 배경 꽃무늬 SVG 패턴 ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Cg opacity='.045' stroke='%232563a8' stroke-width='1' fill='none'%3E%3Cellipse cx='60' cy='60' rx='28' ry='42' transform='rotate(-20 60 60)'/%3E%3Cellipse cx='60' cy='60' rx='28' ry='42' transform='rotate(40 60 60)'/%3E%3Ccircle cx='60' cy='30' r='4'/%3E%3Cellipse cx='340' cy='320' rx='22' ry='34' transform='rotate(15 340 320)'/%3E%3Cellipse cx='340' cy='320' rx='22' ry='34' transform='rotate(75 340 320)'/%3E%3Ccircle cx='340' cy='295' r='3'/%3E%3Cellipse cx='350' cy='70' rx='18' ry='28' transform='rotate(-30 350 70)'/%3E%3Cellipse cx='350' cy='70' rx='18' ry='28' transform='rotate(30 350 70)'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: 400px 400px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── 레이아웃 ─── */
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 16px 60px;
+    }
+
+    /* ════════════════════════════════════
+       히어로 영역
+    ═════════════════════════════════════ */
+    .hero {
+      text-align: center;
+      padding: 52px 24px 44px;
+      position: relative;
+    }
+    .hero-since {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-size: 13px;
+      letter-spacing: .22em;
+      color: var(--blue-mid);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(44px, 11vw, 72px);
+      font-style: italic;
+      font-weight: 600;
+      color: var(--blue-deep);
+      line-height: 1.05;
+      margin-bottom: 4px;
+      letter-spacing: -.01em;
+    }
+    .hero-title span {
+      color: var(--gold-accent);
+    }
+    .hero-org {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--blue-mid);
+      letter-spacing: .06em;
+      margin-bottom: 20px;
+    }
+    .hero-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .hero-divider::before,
+    .hero-divider::after {
+      content: '';
+      flex: 1;
+      max-width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--blue-light));
+    }
+    .hero-divider::after {
+      background: linear-gradient(90deg, var(--blue-light), transparent);
+    }
+    .hero-divider-icon {
+      font-size: 18px;
+      color: var(--blue-light);
+    }
+    .hero-desc {
+      font-size: 14.5px;
+      line-height: 1.85;
+      color: var(--gray-sub);
+      max-width: 380px;
+      margin: 0 auto;
+      word-break: keep-all;
+    }
+    .hero-desc strong {
+      color: var(--blue-deep);
+      font-weight: 500;
+    }
+
+    /* 15 배지 */
+    .badge-15 {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--blue-deep), var(--blue-mid));
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 13px;
+      letter-spacing: .14em;
+      padding: 7px 20px 7px 14px;
+      border-radius: 99px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-btn);
+    }
+    .badge-15 .num {
+      font-size: 22px;
+      font-weight: 600;
+      font-style: italic;
+      line-height: 1;
+    }
+
+    /* ════════════════════════════════════
+       입력 폼 카드
+    ═════════════════════════════════════ */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      padding: 32px 28px;
+      margin-bottom: 28px;
+      border: 1px solid rgba(125,200,227,.18);
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--blue-deep);
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title::before {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 18px;
+      background: linear-gradient(180deg, var(--blue-mid), var(--blue-light));
+      border-radius: 2px;
+    }
+
+    /* 폼 요소 */
+    .form-row { margin-bottom: 18px; }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--blue-deep);
+      margin-bottom: 7px;
+    }
+    label .req { color: var(--gold-accent); margin-left: 2px; }
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      border: 1.5px solid var(--gray-line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--gray-text);
+      background: var(--blue-ghost);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      -webkit-appearance: none;
+    }
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--blue-mid);
+      box-shadow: 0 0 0 3px rgba(74,144,217,.14);
+      background: #fff;
+    }
+    textarea { resize: none; height: 130px; line-height: 1.7; }
+
+    /* 글자 수 카운터 */
+    .char-count {
+      text-align: right;
+      font-size: 12px;
+      color: var(--gray-sub);
+      margin-top: 5px;
+    }
+    .char-count.warn { color: #e07b39; }
+
+    /* 체크박스 */
+    .check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .check-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--blue-mid);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .check-row label {
+      font-size: 13px;
+      color: var(--gray-sub);
+      line-height: 1.6;
+      margin: 0;
+      cursor: pointer;
+    }
+    .check-row label a {
+      color: var(--blue-mid);
+      text-decoration: underline;
+    }
+
+    /* 개인정보 안내 */
+    .privacy-note {
+      background: var(--blue-pale);
+      border-left: 3px solid var(--blue-light);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: var(--gray-sub);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    /* 제출 버튼 */
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-mid) 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition: transform .15s, box-shadow .15s, opacity .2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,168,.35); }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* 성공 메시지 */
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 24px 0 8px;
+      animation: fadeUp .4s ease;
+    }
+    .success-msg .icon { font-size: 40px; margin-bottom: 10px; }
+    .success-msg p {
+      font-size: 15px;
+      color: var(--blue-deep);
+      font-weight: 500;
+      line-height: 1.7;
+    }
+    .success-msg .sub {
+      font-size: 13px;
+      color: var(--gray-sub);
+      margin-top: 6px;
+    }
+
+    /* ════════════════════════════════════
+       메시지 목록
+    ═════════════════════════════════════ */
+    .messages-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .messages-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--blue-deep);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .messages-title::before {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 18px;
+      background: linear-gradient(180deg, var(--gold-accent), #e0be6e);
+      border-radius: 2px;
+    }
+    .messages-count {
+      font-size: 13px;
+      color: var(--gray-sub);
+    }
+    .messages-count strong { color: var(--blue-mid); }
+
+    /* 빈 상태 */
+    .empty-state {
+      text-align: center;
+      padding: 44px 20px;
+      color: var(--gray-sub);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .empty-state .icon { font-size: 36px; display: block; margin-bottom: 12px; opacity: .5; }
+
+    /* 메시지 카드 */
+    .msg-card {
+      background: var(--white);
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(37,99,168,.07);
+      padding: 20px 22px;
+      margin-bottom: 14px;
+      border: 1px solid rgba(125,200,227,.15);
+      position: relative;
+      animation: fadeUp .35s ease both;
+    }
+    .msg-card.is-new {
+      border-color: var(--blue-light);
+      box-shadow: 0 4px 20px rgba(74,144,217,.18);
+    }
+    .msg-card-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .msg-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-pale), var(--blue-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--blue-deep);
+      flex-shrink: 0;
+    }
+    .msg-meta { flex: 1; }
+    .msg-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--blue-deep);
+    }
+    .msg-badge {
+      display: inline-block;
+      font-size: 10.5px;
+      padding: 2px 8px;
+      border-radius: 99px;
+      background: var(--blue-pale);
+      color: var(--blue-mid);
+      font-weight: 500;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .msg-date {
+      font-size: 11.5px;
+      color: var(--gray-sub);
+      margin-top: 2px;
+    }
+    .msg-body {
+      font-size: 14px;
+      line-height: 1.85;
+      color: var(--gray-text);
+      word-break: keep-all;
+    }
+    .quote-mark {
+      font-family: var(--font-display);
+      font-size: 36px;
+      line-height: .8;
+      color: var(--blue-pale);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* ─── 애니메이션 ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero { animation: fadeUp .6s ease both; }
+    .card { animation: fadeUp .6s .1s ease both; }
+
+    /* ─── 푸터 ─── */
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--gray-sub);
+      padding-top: 20px;
+      line-height: 1.8;
+      border-top: 1px solid var(--gray-line);
+      margin-top: 40px;
+    }
+
+    /* ─── 반응형 ─── */
+    @media (max-width: 480px) {
+      .card { padding: 24px 18px; }
+      .hero { padding: 40px 16px 32px; }
+    }
+
+    /* ─── 로딩 스피너 ─── */
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <!-- ══════════════════════════
+       히어로 영역
+  ══════════════════════════════ -->
+  <div class="hero">
+    <span class="hero-since">Since 2011</span>
+    <div class="hero-title"><span>15</span>th Anniversary</div>
+    <div class="hero-org">부천희망재단</div>
+
+    <div class="hero-divider">
+      <span class="hero-divider-icon">✦</span>
+    </div>
+
+    <div class="badge-15">
+      창립 15주년 기념 축하메세지
+    </div>
+
+    <p class="hero-desc">
+      <strong>부천의 희망을 함께 그려온 15년,</strong><br />
+      시민의 나눔으로 이어온 소중한 발자취입니다.<br />
+      남겨주신 축하의 메시지는 또 하나의 희망 기록이 됩니다.
+    </p>
+  </div>
+
+  <!-- ══════════════════════════
+       입력 폼
+  ══════════════════════════════ -->
+  <div class="card" id="formCard">
+    <div class="card-title">축하메시지 남기기</div>
+
+    <div id="formArea">
+      <!-- 이름 -->
+      <div class="form-row">
+        <label for="inputName">이름 또는 닉네임 <span class="req">*</span></label>
+        <input type="text" id="inputName" placeholder="예) 홍길동, 부천시민" maxlength="20" autocomplete="off" />
+      </div>
+
+      <!-- 구분 -->
+      <div class="form-row">
+        <label for="inputType">구분 <span class="req">*</span></label>
+        <select id="inputType">
+          <option value="">선택해주세요</option>
+          <option value="시민">시민</option>
+          <option value="후원자">후원자</option>
+          <option value="협력기관">협력기관</option>
+          <option value="자원봉사자">자원봉사자</option>
+          <option value="기타">기타</option>
+        </select>
+      </div>
+
+      <!-- 메시지 -->
+      <div class="form-row">
+        <label for="inputMsg">축하메시지 <span class="req">*</span></label>
+        <textarea id="inputMsg" placeholder="부천희망재단의 15주년을 진심으로 축하합니다…" maxlength="300"></textarea>
+        <div class="char-count" id="charCount">0 / 300자</div>
+      </div>
+
+      <!-- 개인정보 안내 -->
+      <div class="privacy-note">
+        🔒 입력하신 이름은 닉네임으로만 활용되며, 별도의 개인정보는 수집되지 않습니다.<br />
+        공개 동의 시 재단 공식 채널에 메시지가 소개될 수 있습니다.
+      </div>
+
+      <!-- 공개 동의 -->
+      <div class="check-row">
+        <input type="checkbox" id="chkPublic" />
+        <label for="chkPublic">
+          축하메시지를 이 페이지 및 재단 공식 채널에 공개하는 데 동의합니다. <span class="req">*</span>
+        </label>
+      </div>
+
+      <!-- 욕설 안내 -->
+      <div class="check-row" style="margin-bottom:20px;">
+        <input type="checkbox" id="chkPolicy" />
+        <label for="chkPolicy">
+          비방·욕설·광고 등 부적절한 내용은 관리자에 의해 삭제될 수 있음을 확인합니다. <span class="req">*</span>
+        </label>
+      </div>
+
+      <!-- 오류 문구 -->
+      <div id="formError" style="color:#e05050;font-size:13px;margin-bottom:12px;display:none;"></div>
+
+      <button class="btn-submit" id="btnSubmit" onclick="submitMessage()">
+        💙 축하메시지 남기기
+      </button>
+    </div>
+
+    <!-- 제출 완료 메시지 (기본 숨김) -->
+    <div class="success-msg" id="successMsg">
+      <div class="icon">🎉</div>
+      <p>축하메시지가 등록되었습니다!<br />소중한 응원 감사합니다.</p>
+      <p class="sub">메시지는 아래 목록에서 바로 확인하실 수 있습니다.</p>
+      <br />
+      <button class="btn-submit" style="max-width:220px;margin:0 auto;display:block;" onclick="resetForm()">
+        또 다른 메시지 남기기
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       메시지 목록
+  ══════════════════════════════ -->
+  <div class="card">
+    <div class="messages-header">
+      <div class="messages-title">축하메시지 모아보기</div>
+      <div class="messages-count">총 <strong id="totalCount">0</strong>개</div>
+    </div>
+
+    <div id="messageList">
+      <div class="empty-state" id="emptyState">
+        <span class="icon">💌</span>
+        아직 등록된 메시지가 없습니다.<br />
+        첫 번째 축하메시지를 남겨주세요!
+      </div>
+    </div>
+  </div>
+
+  <!-- 푸터 -->
+  <div class="footer">
+    부천희망재단 창립 15주년 기념 · BUCHEON HOPE FOUNDATION<br />
+    © 2026 부천희망재단.
+  </div>
+
+</div><!-- /page-wrap -->
+
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   ★ CONFIG — 여기만 수정하세요!
+   ══════════════════════════════════════════════════════════════
+   Google Sheets 연동 방법:
+   1) Google Apps Script를 새로 만들고 아래 '★ Apps Script 코드'를 붙여넣기
+   2) '배포 > 웹 앱으로 배포'를 클릭하고 URL을 복사
+   3) 아래 GOOGLE_SCRIPT_URL 에 붙여넣기 (빈 문자열이면 연동 안 함)
+══════════════════════════════════════════════════════════════ */
+const CONFIG = {
+  GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxaDwzPfgYEQb67-W4nXs5KSbxt1LGNH5NRCU0GGmqJmIP1mPALDmazoYgJKDz9ZUKxFg/exec',
+  STORAGE_KEY:       'bhf15_messages',  // localStorage 키 (변경 불필요)
+  MAX_CHARS:         300,         // 최대 글자 수
+  MAX_MESSAGES:      200,         // 로컬 저장 최대 개수
+  ADMIN_MODE:        false,       // true 로 바꾸면 승인 전 숨김 처리 (관리자 기능 준비)
+  /* 욕설 간단 필터: 원하는 단어를 추가하세요 */
+  BAD_WORDS:         ['바보', '멍청', '욕설1', '욕설2'],
+};
+
+/* ── 초기화 ── */
+let messages = [];       // 현재 세션의 메시지 배열
+let submitted = false;   // 중복 제출 방지용
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadMessages();
+  renderMessages();
+  // 글자 수 카운터
+  document.getElementById('inputMsg').addEventListener('input', updateCharCount);
+});
+
+/* ── localStorage에서 불러오기 ── */
+function loadMessages() {
+  try {
+    const raw = localStorage.getItem(CONFIG.STORAGE_KEY);
+    messages = raw ? JSON.parse(raw) : [];
+    // 배열 최대치 초과 시 오래된 것 제거
+    if (messages.length > CONFIG.MAX_MESSAGES) {
+      messages = messages.slice(0, CONFIG.MAX_MESSAGES);
+    }
+  } catch (e) {
+    messages = [];
+  }
+}
+
+/* ── localStorage에 저장 ── */
+function saveMessages() {
+  try {
+    localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(messages));
+  } catch (e) {
+    console.warn('localStorage 저장 실패:', e);
+  }
+}
+
+/* ── 글자 수 업데이트 ── */
+function updateCharCount() {
+  const len = document.getElementById('inputMsg').value.length;
+  const el  = document.getElementById('charCount');
+  el.textContent = `${len} / ${CONFIG.MAX_CHARS}자`;
+  el.classList.toggle('warn', len > CONFIG.MAX_CHARS * 0.85);
+}
+
+/* ── 폼 제출 ── */
+function submitMessage() {
+  if (submitted) {
+    showError('이미 메시지를 제출하셨습니다. 새로고침 후 다시 시도해주세요.');
+    return;
+  }
+
+  const name    = document.getElementById('inputName').value.trim();
+  const type    = document.getElementById('inputType').value;
+  const msg     = document.getElementById('inputMsg').value.trim();
+  const pubOk   = document.getElementById('chkPublic').checked;
+  const policyOk= document.getElementById('chkPolicy').checked;
+
+  /* 유효성 검사 */
+  if (!name)    return showError('이름 또는 닉네임을 입력해주세요.');
+  if (!type)    return showError('구분을 선택해주세요.');
+  if (!msg)     return showError('축하메시지를 입력해주세요.');
+  if (msg.length > CONFIG.MAX_CHARS) return showError(`메시지는 ${CONFIG.MAX_CHARS}자 이하로 입력해주세요.`);
+  if (!pubOk)   return showError('메시지 공개에 동의해주셔야 등록됩니다.');
+  if (!policyOk)return showError('운영 정책 확인에 체크해주세요.');
+
+  /* 욕설 필터 */
+  const lowerMsg = msg.toLowerCase();
+  for (const w of CONFIG.BAD_WORDS) {
+    if (lowerMsg.includes(w.toLowerCase())) {
+      return showError('부적절한 표현이 포함되어 있습니다. 수정 후 다시 시도해주세요.');
+    }
+  }
+
+  hideError();
+  setLoading(true);
+
+  const newMsg = {
+    id:        Date.now(),
+    name:      name,
+    type:      type,
+    msg:       msg,
+    approved:  !CONFIG.ADMIN_MODE,  // 관리자 모드면 false(숨김), 아니면 바로 공개
+    createdAt: new Date().toISOString(),
+  };
+
+  /* Google Sheets 연동 (URL 있을 때만) */
+  if (CONFIG.GOOGLE_SCRIPT_URL) {
+    sendToGoogleSheets(newMsg)
+      .then(() => finishSubmit(newMsg))
+      .catch(() => {
+        /* 실패해도 로컬에는 저장 */
+        console.warn('Google Sheets 전송 실패 — 로컬에만 저장합니다.');
+        finishSubmit(newMsg);
+      });
+  } else {
+    /* Google Sheets 미연동 — 로컬 저장만 */
+    finishSubmit(newMsg);
+  }
+}
+
+/* ── 제출 완료 처리 ── */
+function finishSubmit(newMsg) {
+  messages.unshift(newMsg);   // 최신순: 맨 앞에 추가
+  saveMessages();
+  renderMessages();
+  setLoading(false);
+  submitted = true;
+
+  /* UI: 폼 숨기고 완료 메시지 표시 */
+  document.getElementById('formArea').style.display = 'none';
+  const s = document.getElementById('successMsg');
+  s.style.display = 'block';
+
+  /* 새 메시지로 부드럽게 스크롤 */
+  setTimeout(() => {
+    document.getElementById('messageList').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 300);
+}
+
+/* ── 폼 초기화 (또 남기기 버튼) ── */
+function resetForm() {
+  submitted = false;
+  document.getElementById('inputName').value = '';
+  document.getElementById('inputType').value = '';
+  document.getElementById('inputMsg').value  = '';
+  document.getElementById('chkPublic').checked  = false;
+  document.getElementById('chkPolicy').checked  = false;
+  updateCharCount();
+  document.getElementById('formArea').style.display = 'block';
+  document.getElementById('successMsg').style.display = 'none';
+  document.getElementById('formCard').scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ── 메시지 목록 렌더링 ── */
+function renderMessages() {
+  const list  = document.getElementById('messageList');
+  const empty = document.getElementById('emptyState');
+
+  /* 공개(approved) 메시지만 필터 */
+  const visible = messages.filter(m => m.approved);
+
+  document.getElementById('totalCount').textContent = visible.length;
+
+  if (visible.length === 0) {
+    if (!empty) {
+      list.innerHTML = `<div class="empty-state" id="emptyState">
+        <span class="icon">💌</span>
+        아직 등록된 메시지가 없습니다.<br/>첫 번째 축하메시지를 남겨주세요!
+      </div>`;
+    }
+    return;
+  }
+
+  const oldEmpty = document.getElementById('emptyState');
+  if (oldEmpty) oldEmpty.remove();
+
+  /* 기존 카드 지우고 다시 그리기 */
+  list.innerHTML = visible.map((m, i) => `
+    <div class="msg-card ${i === 0 ? 'is-new' : ''}" style="animation-delay:${i * 0.05}s">
+      <div class="msg-card-top">
+        <div class="msg-avatar">${m.name.charAt(0)}</div>
+        <div class="msg-meta">
+          <div class="msg-name">
+            ${escHtml(m.name)}
+            <span class="msg-badge">${escHtml(m.type)}</span>
+          </div>
+          <div class="msg-date">${formatDate(m.createdAt)}</div>
+        </div>
+      </div>
+      <div class="msg-body">
+        <span class="quote-mark">"</span>
+        ${escHtml(m.msg)}
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ── Google Sheets 전송 (GET 파라미터 방식 — CORS 문제 없음) ── */
+async function sendToGoogleSheets(data) {
+  // POST+no-cors는 Apps Script가 데이터를 못 받는 경우가 많아
+  // GET 방식(URL 쿼리 파라미터)으로 전송합니다.
+  const params = new URLSearchParams({
+    name:      data.name,
+    type:      data.type,
+    msg:       data.msg,
+    approved:  data.approved ? '공개' : '검토중',
+    createdAt: data.createdAt,
+    id:        String(data.id),
+  });
+  const url = CONFIG.GOOGLE_SCRIPT_URL + '?' + params.toString();
+  const res = await fetch(url, { method: 'GET', mode: 'no-cors' });
+  return res;
+}
+
+/* ── 유틸 ── */
+function showError(msg) {
+  const el = document.getElementById('formError');
+  el.textContent = '⚠ ' + msg;
+  el.style.display = 'block';
+}
+function hideError() {
+  document.getElementById('formError').style.display = 'none';
+}
+function setLoading(on) {
+  const btn = document.getElementById('btnSubmit');
+  if (on) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>등록 중...';
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = '💙 축하메시지 남기기';
+  }
+}
+function escHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/\n/g, '<br/>');
+}
+function formatDate(iso) {
+  const d = new Date(iso);
+  return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+</script>
+
+<!--
+════════════════════════════════════════════════════════════════
+  ★ Google Apps Script 코드 (시트 연동 시 사용)
+  ────────────────────────────────────────────────────────────
+  1. https://script.google.com/ 접속
+  2. 새 프로젝트 생성
+  3. 아래 코드를 통째로 붙여넣기
+  4. 상단 메뉴 > 배포 > 새 배포 > 웹 앱
+     - 실행 계정: 나(본인)
+     - 액세스 권한: 모든 사람
+  5. 배포 URL을 복사해서 위 CONFIG.GOOGLE_SCRIPT_URL 에 붙여넣기
+
+────────────────────────────────────────────────────────────
+★ 아래 코드를 Google Apps Script에 복사하세요 (기존 코드 전체 교체)
+★ 수정 후 반드시 '새 버전으로 재배포'를 해야 적용됩니다!
+
+// ─── GET 방식으로 데이터 수신 (CORS 문제 없는 안정적인 방법) ───
+function doGet(e) {
+  try {
+    var p     = e.parameter;                          // URL 파라미터 수신
+    var ss    = SpreadsheetApp.openById('1eNytq2DVWOu-RcJOrGhT74VadEHWxkdQJtXsJ7acpSo');
+    var sheet = ss.getSheetByName('messages');
+
+    // 시트가 없으면 헤더와 함께 자동 생성
+    if (!sheet) {
+      sheet = ss.insertSheet('messages');
+      sheet.appendRow(['작성일시','이름','구분','메시지','상태','ID']);
+    }
+
+    // 데이터가 있을 때만 저장 (테스트 ping 제외)
+    if (p.name) {
+      sheet.appendRow([
+        new Date(p.createdAt || new Date()),  // A: 작성일시
+        p.name      || '',                    // B: 이름
+        p.type      || '',                    // C: 구분
+        p.msg       || '',                    // D: 메시지
+        p.approved  || '공개',                // E: 상태
+        p.id        || '',                    // F: ID
+      ]);
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ result: 'ok' }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch(err) {
+    Logger.log('오류: ' + err.toString());
+    return ContentService
+      .createTextOutput(JSON.stringify({ result: 'error', message: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+════════════════════════════════════════════════════════════════
+-->
+</body>
+</html>
